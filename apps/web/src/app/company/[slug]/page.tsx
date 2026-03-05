@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { loadJobsData, loadCompaniesConfig } from '@/lib/data';
 import JobsTable from '@/components/JobsTable';
 import type { CompanyConfig } from '@/lib/types';
+import { isUSLocation } from '@/lib/utils';
 
 interface Props {
   params: { slug: string };
@@ -18,8 +19,8 @@ export function generateMetadata({ params }: Props) {
   const company = companies.find((c: CompanyConfig) => c.slug === params.slug);
   if (!company) return {};
   return {
-    title: `${company.name} Design Jobs — DesignJobsHub`,
-    description: `Browse design, UX, and product design jobs at ${company.name}.`,
+    title: `${company.name} UX & Design Jobs — UX Jobs in US`,
+    description: `Browse US-based UX, product design, and research jobs at ${company.name}.`,
   };
 }
 
@@ -30,7 +31,14 @@ export default function CompanyPage({ params }: Props) {
   if (!company) notFound();
 
   const { jobs, generatedAt } = loadJobsData();
-  const companyJobs = jobs.filter((j) => j.companySlug === params.slug);
+
+  // Only show US locations on company pages
+  const companyJobs = jobs
+    .filter((j) => j.companySlug === params.slug)
+    .filter((j) => isUSLocation(j.location));
+
+  const totalAtCompany = jobs.filter((j) => j.companySlug === params.slug).length;
+  const nonUSCount = totalAtCompany - companyJobs.length;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -48,8 +56,8 @@ export default function CompanyPage({ params }: Props) {
       </nav>
 
       {/* Company header */}
-      <div className="flex items-center gap-4 mb-8">
-        <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center shadow-sm">
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center shadow-sm flex-shrink-0">
           <img
             src={`https://logo.clearbit.com/${company.domain}`}
             alt={company.name}
@@ -60,10 +68,15 @@ export default function CompanyPage({ params }: Props) {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-slate-900">{company.name}</h1>
-          <div className="flex items-center gap-3 mt-1">
+          <div className="flex items-center gap-3 mt-1 flex-wrap">
             <span className="text-sm text-slate-500">
-              {companyJobs.length} design job{companyJobs.length !== 1 ? 's' : ''}
+              {companyJobs.length} US design job{companyJobs.length !== 1 ? 's' : ''}
             </span>
+            {nonUSCount > 0 && (
+              <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                {nonUSCount} non-US role{nonUSCount !== 1 ? 's' : ''} hidden
+              </span>
+            )}
             <span className="text-slate-300">·</span>
             <a
               href={company.portalUrl}
@@ -79,6 +92,15 @@ export default function CompanyPage({ params }: Props) {
             </a>
           </div>
         </div>
+      </div>
+
+      {/* US-only notice */}
+      <div className="flex items-center gap-2 text-xs text-slate-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-6 w-fit">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <circle cx="6.5" cy="6.5" r="5.5" />
+          <path d="M6.5 6v3M6.5 4v.5" />
+        </svg>
+        Showing US-based and US remote roles only
       </div>
 
       {/* Jobs table */}

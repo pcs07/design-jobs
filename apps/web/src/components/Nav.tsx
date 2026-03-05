@@ -18,7 +18,7 @@ export default function Nav() {
               <rect x="11" y="11" width="7" height="7" rx="1.5" opacity="0.3" />
             </svg>
           </span>
-          <span>DesignJobsHub</span>
+          <span>UX Jobs in US</span>
         </Link>
 
         <nav className="flex items-center gap-1">

@@ -3,9 +3,9 @@ import './globals.css';
 import Nav from '@/components/Nav';
 
 export const metadata: Metadata = {
-  title: 'Design Jobs Hub — Top 100 Companies',
+  title: 'UX Jobs in US — Top 200 Companies',
   description:
-    'Aggregated design job listings from the top 100 tech companies. Find UX, product design, design systems, and research roles in one place.',
+    'Aggregated UX and design job listings from the top 200 US tech companies. Find product design, UX research, design systems, and more — all in one place.',
 };
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <footer className="bg-slate-900 text-slate-400 text-xs py-6 px-4 text-center mt-12">
           <p>
-            Design Jobs Hub — data refreshed daily via GitHub Actions. Jobs
+            UX Jobs in US — data refreshed daily via GitHub Actions. Jobs
             sourced from official company portals.
           </p>
           <p className="mt-1">

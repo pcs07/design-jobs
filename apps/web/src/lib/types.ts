@@ -40,3 +40,17 @@ export interface CompanyStat {
 
 export type SortOption = 'newest' | 'company_az' | 'salary_desc';
 export type LocationFilter = 'all' | 'remote' | 'hybrid' | 'onsite';
+export type RoleFilter =
+  | 'all'
+  | 'product_designer'
+  | 'ux_designer'
+  | 'ui_designer'
+  | 'researcher'
+  | 'design_systems'
+  | 'motion'
+  | 'content'
+  | 'visual'
+  | 'leadership'
+  | 'other';
+export type DateFilter = 'all' | '7d' | '30d' | '90d';
+export type ExperienceFilter = 'all' | 'entry' | 'mid' | 'senior';
