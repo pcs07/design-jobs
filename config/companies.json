@@ -1,0 +1,102 @@
+[
+  {
+    "id": "airbnb",
+    "name": "Airbnb",
+    "slug": "airbnb",
+    "domain": "airbnb.com",
+    "portalUrl": "https://careers.airbnb.com",
+    "sourceType": "greenhouse",
+    "boardToken": "airbnb",
+    "notes": "Greenhouse ATS"
+  },
+  {
+    "id": "netflix",
+    "name": "Netflix",
+    "slug": "netflix",
+    "domain": "netflix.com",
+    "portalUrl": "https://jobs.netflix.com",
+    "sourceType": "greenhouse",
+    "boardToken": "netflix",
+    "notes": "Greenhouse ATS"
+  },
+  {
+    "id": "figma",
+    "name": "Figma",
+    "slug": "figma",
+    "domain": "figma.com",
+    "portalUrl": "https://www.figma.com/careers",
+    "sourceType": "greenhouse",
+    "boardToken": "figma",
+    "notes": "Greenhouse ATS"
+  },
+  {
+    "id": "shopify",
+    "name": "Shopify",
+    "slug": "shopify",
+    "domain": "shopify.com",
+    "portalUrl": "https://www.shopify.com/careers",
+    "sourceType": "greenhouse",
+    "boardToken": "shopify",
+    "notes": "Greenhouse ATS"
+  },
+  {
+    "id": "dropbox",
+    "name": "Dropbox",
+    "slug": "dropbox",
+    "domain": "dropbox.com",
+    "portalUrl": "https://jobs.dropbox.com",
+    "sourceType": "greenhouse",
+    "boardToken": "dropbox",
+    "notes": "Greenhouse ATS"
+  },
+  {
+    "id": "github",
+    "name": "GitHub",
+    "slug": "github",
+    "domain": "github.com",
+    "portalUrl": "https://github.com/about/careers",
+    "sourceType": "greenhouse",
+    "boardToken": "github",
+    "notes": "Greenhouse ATS"
+  },
+  {
+    "id": "stripe",
+    "name": "Stripe",
+    "slug": "stripe",
+    "domain": "stripe.com",
+    "portalUrl": "https://stripe.com/jobs",
+    "sourceType": "lever",
+    "boardToken": "stripe",
+    "notes": "Lever ATS"
+  },
+  {
+    "id": "duolingo",
+    "name": "Duolingo",
+    "slug": "duolingo",
+    "domain": "duolingo.com",
+    "portalUrl": "https://careers.duolingo.com",
+    "sourceType": "greenhouse",
+    "boardToken": "duolingo",
+    "notes": "Greenhouse ATS"
+  },
+  {
+    "id": "lyft",
+    "name": "Lyft",
+    "slug": "lyft",
+    "domain": "lyft.com",
+    "portalUrl": "https://www.lyft.com/careers",
+    "sourceType": "greenhouse",
+    "boardToken": "lyft",
+    "notes": "Greenhouse ATS"
+  },
+  {
+    "id": "squarespace",
+    "name": "Squarespace",
+    "slug": "squarespace",
+    "domain": "squarespace.com",
+    "portalUrl": "https://www.squarespace.com/about/careers",
+    "sourceType": "greenhouse",
+    "boardToken": "squarespace",
+    "notes": "Greenhouse ATS"
+  }
+]

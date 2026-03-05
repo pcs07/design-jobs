@@ -1,0 +1,12 @@
+{
+  "name": "design-jobs-hub",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "scrape": "pnpm --filter scraper start",
+    "seed": "pnpm --filter scraper seed",
+    "scrape:build": "pnpm scrape && pnpm build"
+  }
+}
