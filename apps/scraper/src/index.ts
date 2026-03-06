@@ -10,8 +10,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { fetchGreenhouseJobs } from './scrapers/greenhouse';
 import { fetchLeverJobs } from './scrapers/lever';
-import { fetchGoogleJobs } from './scrapers/google';
-import { fetchMicrosoftJobs } from './scrapers/microsoft';
+import { fetchWorkdayJobs } from './scrapers/workday';
 import { fetchAmazonJobs } from './scrapers/amazon';
 import { fetchMetaJobs } from './scrapers/meta';
 import { scrapeWithPlaywright } from './scrapers/playwright-scraper';
@@ -50,11 +49,8 @@ async function main() {
         case 'lever':
           jobs = await fetchLeverJobs(company);
           break;
-        case 'google':
-          jobs = await fetchGoogleJobs(company);
-          break;
-        case 'microsoft':
-          jobs = await fetchMicrosoftJobs(company);
+        case 'workday':
+          jobs = await fetchWorkdayJobs(company);
           break;
         case 'amazon':
           jobs = await fetchAmazonJobs(company);

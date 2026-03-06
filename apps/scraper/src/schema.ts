@@ -25,10 +25,9 @@ export const CompanyConfigSchema = z.object({
   sourceType: z.enum([
     'greenhouse',
     'lever',
+    'workday',
     'scrape',
     'rss',
-    'google',
-    'microsoft',
     'amazon',
     'meta',
   ]),
