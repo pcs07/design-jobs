@@ -22,7 +22,16 @@ export const CompanyConfigSchema = z.object({
   slug: z.string(),
   domain: z.string(),
   portalUrl: z.string().url(),
-  sourceType: z.enum(['greenhouse', 'lever', 'scrape', 'rss']),
+  sourceType: z.enum([
+    'greenhouse',
+    'lever',
+    'scrape',
+    'rss',
+    'google',
+    'microsoft',
+    'amazon',
+    'meta',
+  ]),
   boardToken: z.string().optional(),
   notes: z.string().optional(),
 });

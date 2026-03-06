@@ -24,7 +24,7 @@ export interface CompanyConfig {
   slug: string;
   domain: string;
   portalUrl: string;
-  sourceType: 'greenhouse' | 'lever' | 'scrape' | 'rss';
+  sourceType: 'greenhouse' | 'lever' | 'scrape' | 'rss' | 'google' | 'microsoft' | 'amazon' | 'meta';
   boardToken?: string;
   notes?: string;
 }

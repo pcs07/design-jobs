@@ -1,8 +1,8 @@
 /**
- * Design Jobs Scraper — main entry point
+ * UX Jobs in US — Scraper entry point
  *
  * Usage:
- *   pnpm scrape                       # runs with defaults
+ *   pnpm scrape
  *   OUTPUT_DIR=/path/to/out pnpm scrape
  */
 
@@ -10,24 +10,25 @@ import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { fetchGreenhouseJobs } from './scrapers/greenhouse';
 import { fetchLeverJobs } from './scrapers/lever';
+import { fetchGoogleJobs } from './scrapers/google';
+import { fetchMicrosoftJobs } from './scrapers/microsoft';
+import { fetchAmazonJobs } from './scrapers/amazon';
+import { fetchMetaJobs } from './scrapers/meta';
 import { scrapeWithPlaywright } from './scrapers/playwright-scraper';
 import { dedup } from './utils/dedup';
 import { politeDelay } from './utils/rateLimit';
 import { JobRecordSchema, CompanyConfigSchema } from './schema';
 import type { JobRecord, CompanyConfig } from './schema';
 
-// ── Paths ──────────────────────────────────────────────────────────────────────
 const ROOT = join(__dirname, '../../..');
 const COMPANIES_FILE = join(ROOT, 'config', 'companies.json');
 const OUTPUT_DIR =
   process.env.OUTPUT_DIR ?? join(ROOT, 'apps', 'web', 'public', 'data');
 
-// ── Main ───────────────────────────────────────────────────────────────────────
 async function main() {
-  console.log('=== Design Jobs Scraper ===');
+  console.log('=== UX Jobs in US — Scraper ===');
   console.log(`Output → ${OUTPUT_DIR}\n`);
 
-  // Load and validate companies config
   const raw = readFileSync(COMPANIES_FILE, 'utf-8');
   const companies: CompanyConfig[] = JSON.parse(raw).map((c: unknown) =>
     CompanyConfigSchema.parse(c)
@@ -49,22 +50,33 @@ async function main() {
         case 'lever':
           jobs = await fetchLeverJobs(company);
           break;
+        case 'google':
+          jobs = await fetchGoogleJobs(company);
+          break;
+        case 'microsoft':
+          jobs = await fetchMicrosoftJobs(company);
+          break;
+        case 'amazon':
+          jobs = await fetchAmazonJobs(company);
+          break;
+        case 'meta':
+          jobs = await fetchMetaJobs(company);
+          break;
         case 'scrape':
           jobs = await scrapeWithPlaywright(company);
           break;
         case 'rss':
-          console.warn(`  ⚠ RSS source not yet implemented for ${company.name}, skipping`);
+          console.warn(`  ⚠ RSS not implemented for ${company.name}, skipping`);
           break;
         default:
           console.warn(`  ⚠ Unknown sourceType for ${company.name}, skipping`);
       }
 
-      // Validate each job record
       const validated = jobs
         .map((j) => {
           const result = JobRecordSchema.safeParse(j);
           if (!result.success) {
-            console.warn(`  Invalid job record skipped:`, result.error.issues[0]);
+            console.warn(`  Skipping invalid record:`, result.error.issues[0]);
             return null;
           }
           return result.data;
@@ -78,22 +90,18 @@ async function main() {
       errors.push({ company: company.name, error: msg });
     }
 
-    // Polite delay between companies
-    await politeDelay(1000, 2000);
+    await politeDelay(800, 1500);
   }
 
-  // Deduplicate
   const dedupedJobs = dedup(allJobs);
   console.log(`\nDeduplication: ${allJobs.length} → ${dedupedJobs.length} jobs`);
 
-  // Sort by postedAt descending
   dedupedJobs.sort((a, b) => {
     const ta = a.postedAt ? new Date(a.postedAt).getTime() : 0;
     const tb = b.postedAt ? new Date(b.postedAt).getTime() : 0;
     return tb - ta;
   });
 
-  // Write output
   mkdirSync(OUTPUT_DIR, { recursive: true });
 
   const output = {
@@ -112,7 +120,7 @@ async function main() {
 
   console.log(`\n✓ Done! ${dedupedJobs.length} jobs written to ${outPath}`);
   if (errors.length > 0) {
-    console.warn(`⚠ ${errors.length} company/ies had errors:`);
+    console.warn(`⚠ ${errors.length} companies had errors:`);
     errors.forEach((e) => console.warn(`  - ${e.company}: ${e.error}`));
   }
 }

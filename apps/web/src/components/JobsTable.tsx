@@ -13,6 +13,19 @@ import {
 
 const PAGE_SIZE = 25;
 
+type SortCol = 'company' | 'title' | 'location' | 'experience' | 'salary' | 'posted';
+
+function SortIcon({ active, dir }: { active: boolean; dir: 'asc' | 'desc' }) {
+  if (!active) return (
+    <svg width="10" height="12" viewBox="0 0 10 12" fill="none" stroke="currentColor" strokeWidth="1.3" className="opacity-30 inline ml-1">
+      <path d="M5 1v10M2 4l3-3 3 3M2 8l3 3 3-3" />
+    </svg>
+  );
+  return dir === 'asc'
+    ? <svg width="10" height="12" viewBox="0 0 10 12" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-blue-500 inline ml-1"><path d="M5 10V2M2 5l3-3 3 3" /></svg>
+    : <svg width="10" height="12" viewBox="0 0 10 12" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-blue-500 inline ml-1"><path d="M5 2v8M2 7l3 3 3-3" /></svg>;
+}
+
 function ExternalIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className="inline flex-shrink-0">
@@ -139,8 +152,21 @@ export default function JobsTable({
   const [dateFilter, setDateFilter] = useState<DateFilter>('all');
   const [expFilter, setExpFilter] = useState<ExperienceFilter>('all');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
+  const [sortCol, setSortCol] = useState<SortCol>('posted');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(true);
+
+  function handleColSort(col: SortCol) {
+    if (col === sortCol) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortCol(col);
+      setSortDir(col === 'posted' || col === 'salary' || col === 'experience' ? 'desc' : 'asc');
+    }
+    setSortBy('newest'); // reset dropdown when using column sort
+    setPage(1);
+  }
 
   const reset = (setter: (v: never) => void, val: never) => {
     setter(val);
@@ -196,22 +222,39 @@ export default function JobsTable({
     }
 
     result.sort((a, b) => {
+      const dir = sortDir === 'asc' ? 1 : -1;
+
+      // Column header sort takes priority
+      switch (sortCol) {
+        case 'company': return dir * a.company.localeCompare(b.company);
+        case 'title': return dir * a.title.localeCompare(b.title);
+        case 'location': return dir * a.location.localeCompare(b.location);
+        case 'experience': {
+          const ea = parseInt(a.experience ?? '0') || 0;
+          const eb = parseInt(b.experience ?? '0') || 0;
+          return dir * (ea - eb);
+        }
+        case 'salary': return dir * (parseSalaryNum(a.salary) - parseSalaryNum(b.salary));
+        case 'posted': {
+          const ta = a.postedAt ? new Date(a.postedAt).getTime() : 0;
+          const tb = b.postedAt ? new Date(b.postedAt).getTime() : 0;
+          return dir * (ta - tb);
+        }
+      }
+
+      // Dropdown sort fallback
       if (sortBy === 'newest') {
         const ta = a.postedAt ? new Date(a.postedAt).getTime() : 0;
         const tb = b.postedAt ? new Date(b.postedAt).getTime() : 0;
         return tb - ta;
       }
-      if (sortBy === 'salary_desc') {
-        return parseSalaryNum(b.salary) - parseSalaryNum(a.salary);
-      }
-      if (sortBy === 'company_az') {
-        return a.company.localeCompare(b.company);
-      }
+      if (sortBy === 'salary_desc') return parseSalaryNum(b.salary) - parseSalaryNum(a.salary);
+      if (sortBy === 'company_az') return a.company.localeCompare(b.company);
       return 0;
     });
 
     return result;
-  }, [jobs, search, locationFilter, roleFilter, dateFilter, expFilter, sortBy]);
+  }, [jobs, search, locationFilter, roleFilter, dateFilter, expFilter, sortBy, sortCol, sortDir]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -388,13 +431,33 @@ export default function JobsTable({
           >
             <thead className="bg-slate-50">
               <tr>
-                {showCompanyCol && <th scope="col" className="th-base pl-5">Company</th>}
-                <th scope="col" className="th-base">Role</th>
+                {showCompanyCol && (
+                  <th scope="col" onClick={() => handleColSort('company')}
+                    className="th-base pl-5 cursor-pointer hover:bg-slate-100 select-none">
+                    Company <SortIcon active={sortCol === 'company'} dir={sortDir} />
+                  </th>
+                )}
+                <th scope="col" onClick={() => handleColSort('title')}
+                  className="th-base cursor-pointer hover:bg-slate-100 select-none">
+                  Role <SortIcon active={sortCol === 'title'} dir={sortDir} />
+                </th>
                 <th scope="col" className="th-base">Category</th>
-                <th scope="col" className="th-base">Location</th>
-                <th scope="col" className="th-base">Experience</th>
-                <th scope="col" className="th-base">Salary Range</th>
-                <th scope="col" className="th-base">Posted</th>
+                <th scope="col" onClick={() => handleColSort('location')}
+                  className="th-base cursor-pointer hover:bg-slate-100 select-none">
+                  Location <SortIcon active={sortCol === 'location'} dir={sortDir} />
+                </th>
+                <th scope="col" onClick={() => handleColSort('experience')}
+                  className="th-base cursor-pointer hover:bg-slate-100 select-none">
+                  Experience <SortIcon active={sortCol === 'experience'} dir={sortDir} />
+                </th>
+                <th scope="col" onClick={() => handleColSort('salary')}
+                  className="th-base cursor-pointer hover:bg-slate-100 select-none">
+                  Salary <SortIcon active={sortCol === 'salary'} dir={sortDir} />
+                </th>
+                <th scope="col" onClick={() => handleColSort('posted')}
+                  className="th-base cursor-pointer hover:bg-slate-100 select-none">
+                  Posted <SortIcon active={sortCol === 'posted'} dir={sortDir} />
+                </th>
                 <th scope="col" className="th-base">Apply</th>
               </tr>
             </thead>
