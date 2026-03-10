@@ -30,6 +30,8 @@ export const CompanyConfigSchema = z.object({
     'rss',
     'amazon',
     'meta',
+    'google',
+    'microsoft',
   ]),
   boardToken: z.string().optional(),
   notes: z.string().optional(),

@@ -13,6 +13,8 @@ import { fetchLeverJobs } from './scrapers/lever';
 import { fetchWorkdayJobs } from './scrapers/workday';
 import { fetchAmazonJobs } from './scrapers/amazon';
 import { fetchMetaJobs } from './scrapers/meta';
+import { fetchGoogleJobs } from './scrapers/google';
+import { fetchMicrosoftJobs } from './scrapers/microsoft';
 import { scrapeWithPlaywright } from './scrapers/playwright-scraper';
 import { dedup } from './utils/dedup';
 import { politeDelay } from './utils/rateLimit';
@@ -57,6 +59,12 @@ async function main() {
           break;
         case 'meta':
           jobs = await fetchMetaJobs(company);
+          break;
+        case 'google':
+          jobs = await fetchGoogleJobs(company);
+          break;
+        case 'microsoft':
+          jobs = await fetchMicrosoftJobs(company);
           break;
         case 'scrape':
           jobs = await scrapeWithPlaywright(company);

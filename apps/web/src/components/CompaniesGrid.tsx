@@ -69,10 +69,10 @@ export default function CompaniesGrid({ companies, totalJobs, generatedAt }: Pro
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">
-          Top Design Companies
+          1,500+ Top US Design Companies
         </h1>
         <p className="text-slate-500 mt-1 text-sm">
-          {companies.length} companies &middot;{' '}
+          {companies.length} companies tracked &middot;{' '}
           <span className="font-medium text-blue-600">{totalJobs} design jobs</span>
           {generatedAt && (
             <span className="ml-2 text-slate-400">
