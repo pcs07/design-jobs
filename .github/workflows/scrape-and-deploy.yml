@@ -1,6 +1,13 @@
 name: Scrape & Deploy
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'config/companies.json'
+      - 'apps/web/**'
+      - 'apps/scraper/**'
+      - '.github/workflows/**'
   schedule:
     # Runs daily at 6:00 AM UTC
     - cron: '0 6 * * *'
@@ -46,11 +53,11 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        if: ${{ !inputs.skip_scrape }}
+        if: ${{ inputs.skip_scrape != true }}
         run: pnpm --filter scraper exec playwright install chromium --with-deps
 
       - name: Run scraper
-        if: ${{ !inputs.skip_scrape }}
+        if: ${{ inputs.skip_scrape != true }}
         run: pnpm scrape
         env:
           OUTPUT_DIR: ${{ github.workspace }}/apps/web/public/data
